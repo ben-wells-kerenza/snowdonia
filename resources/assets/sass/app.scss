@@ -1,8 +1,22 @@
 $btn-font-weight: 300;
 $font-family-sans-serif: "Roboto", Helvetica, Arial, sans-serif;
 
-@import "bootstrap/bootstrap";
+@import "bootstrap";
 
 body, label, .checkbox label {
-	font-weight: 300;
+    font-weight: 300;
+}
+
+input.output {
+    width: 90%;
+    float: left;
+}
+output {
+    @extend .form-control;
+    width: 10%;
+    padding: 6px;
+    float: right;
+    &.focus {
+        background-color: $brand-success;
+    }
 }

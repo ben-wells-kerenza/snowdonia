@@ -14,9 +14,15 @@
                         .after('<output/>').next()
                         .attr(settings.outputAttr)
                         .html($(this).val());
-                    $(this).bind('change.input.output', function(e){
+                    $(this).bind('change.input.output, mousemove.input.output', function(e){
                         var settings = $(this).data('input-settings');
                         settings.output.html($(this).val());
+                    }).bind('focus.input.output', function(e){
+                        var settings = $(this).data('input-settings');
+                        settings.output.addClass('focus');
+                    }).bind('blur.input.output', function(e){
+                        var settings = $(this).data('input-settings');
+                        settings.output.removeClass('focus');
                     });
                     $(this).addClass('output');
                     return $(this).data('input-settings', settings)

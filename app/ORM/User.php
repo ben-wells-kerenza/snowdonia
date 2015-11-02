@@ -29,7 +29,6 @@ class User extends Base implements AuthenticatableContract, CanResetPasswordCont
 	 * @var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
-       
     
     public function games()
     {

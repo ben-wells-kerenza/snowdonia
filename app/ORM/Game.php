@@ -9,6 +9,11 @@ namespace App\ORM;
  */
 class Game extends Base {
     
+    public function creator()
+    {
+        return $this->belongsTo('App\ORM\User', 'creator');
+    }
+    
     public function users()
     {
         return $this->belongsToMany('App\ORM\User');

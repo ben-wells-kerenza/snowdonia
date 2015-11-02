@@ -16,6 +16,7 @@ class CreateGamesTable extends Migration {
 		{
                     $table->increments('id');
                     $table->integer('no_players');
+                    $table->integer('creator');
                     $table->timestamps();
                     $table->softDeletes();
 		});
