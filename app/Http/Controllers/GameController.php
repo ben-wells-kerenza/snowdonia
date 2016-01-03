@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 
 use App\ORM\Game as Game;
+use App\ORM\Game\Type as Game_Type;
 
 class GameController extends Controller {
 
@@ -23,7 +24,9 @@ class GameController extends Controller {
 	 */
 	public function getNew()
 	{
-            return view('game.new');
+    	return view('game.new', [
+    		'game_types' => Game_Type::all(),
+    	]);
 	}
 
 	/**
@@ -35,9 +38,11 @@ class GameController extends Controller {
         public function postNew(Request $request)
         {
             $user = $request->user();
-            $game = new Game;
+            $type = Game_Type::find($request->input('game_type_id'));
+            $game = new Game();
             $game->no_players = $request->input('no_players');
-            $game->creator = $user->id;
+            $game->creator()->associate($user);
+            $game->type()->associate($type);
             $game->save();
             $game->users()->attach($user->id);
             return redirect()
@@ -45,6 +50,28 @@ class GameController extends Controller {
                         'game' => $game->id,
                     ]);
         }
+
+	/**
+	 * Play the game.
+	 *
+	 * @return Response
+	 */
+	public function getPlay(Request $request, $game)
+	{
+		$game = Game::find($game);
+        if (empty($game))
+        	return redirect()
+            	->action('GameController@getNew')
+                ->withErrors(['game' => 'Try creating a new game.']);
+        if (!$game->users()->where('id', $request->user()->id)->get()->count() != 0)
+            return redirect()
+            	->action('GameController@getNew')
+        		->withErrors(['game' => 'You are not playing in game #'.$game.'.']);
+		$game->setup();
+		return view('game.play', [
+			'game' => $game,
+	    ]);
+	}
 
 	/**
 	 * Waiting room for a game.
@@ -68,9 +95,9 @@ class GameController extends Controller {
 	 */
         public function postWaiting(Request $request, $game)
         {
-            if ($request->game_id != $game)
-                abort(400, 'Game IDs do not match'); //400: Bad Request
             $game = Game::find($game);
+            if ($request->game_id != $game->id)
+                abort(400, 'Game IDs do not match'); //400: Bad Request
             if (count($request->remove))
             {
                 if ($game->creator == $request->user()->id)

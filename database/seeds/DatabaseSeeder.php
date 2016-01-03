@@ -13,6 +13,16 @@ class DatabaseSeeder extends Seeder {
 	public function run()
 	{
             $this->call('UserTableSeeder');
+            $this->call('ActionTableSeeder');
+            $this->call('ResourceTableSeeder');
+            $this->call('WeatherTableSeeder');
+            
+            $this->call('ContractTableSeeder');
+            $this->call('TrainTableSeeder');
+            
+            $this->call('StationTableSeeder');
+            
+            $this->call('BaseGameSeeder');
 	}
 
 }

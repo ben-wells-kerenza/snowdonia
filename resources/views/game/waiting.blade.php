@@ -26,8 +26,9 @@
                                 @include('user.avatar', [
                                     'user' => $user,
                                 ])
-                                    @if(Auth::user()->id === $user->id)
+                                    @if(Auth::user()->id === $user->id || Auth::user()->id === $game->creator->id)
                                     @include('form.checkbox', [
+                                        'label' => (Auth::user()->id === $user->id?'Leave':'Remove'),
                                         'name' => 'remove',
                                         'array' => TRUE,
                                         'value' => $user->id,
@@ -44,6 +45,11 @@
                                 <button type="submit" class="btn btn-primary">
                                     Update
                                 </button>
+                                @if(count($users) == $game->no_players && Auth::user()->id === $game->creator->id)
+                                <a href="{{ url('/game/play', ['game' => $game->id]) }}" class="btn btn-primary">
+                                    Start
+                                </a>
+                                @endif
                             </div>
                         </div>
                     </form>
